@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".WorkoutActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvExercises"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notesWorkout" />
+
     <EditText
         android:id="@+id/nameWorkout"
         android:layout_width="wrap_content"
@@ -13,20 +23,20 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Input Workout Title"
+        android:hint="Input Workout Title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btnAddEx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="24dp"
         android:text="Add Exercise"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notesWorkout" />
+        app:layout_constraintTop_toBottomOf="@+id/rvExercises" />
 
     <EditText
         android:id="@+id/notesWorkout"
@@ -35,7 +45,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="text"
-        android:text="Notes"
+        android:hint="Notes"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.34"
