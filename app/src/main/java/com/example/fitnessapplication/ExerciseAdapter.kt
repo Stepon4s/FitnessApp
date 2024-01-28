@@ -2,17 +2,31 @@ package com.example.fitnessapplication
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapplication.databinding.ExerciseTemplateBinding
 
 class ExerciseAdapter(
-    var exercises: List<Exercise>
+    private var exercises: List<Exercise>
 ) : RecyclerView.Adapter<ExerciseAdapter.ExerciseViewHolder>() {
 
     inner class ExerciseViewHolder(private val binding: ExerciseTemplateBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
             binding.exTitle.text = exercise.title
+            var adapter = SetAdapter(exercise.sets)
+
+            binding.rvSets.layoutManager = LinearLayoutManager(
+                binding.root.context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            binding.rvSets.adapter = adapter
+
+            binding.btnAddSet.setOnClickListener {
+                exercise.sets.add(Set(exercise.sets.size + 1, 0, 0.0))
+                adapter.notifyItemInserted(exercise.sets.size-1)
+            }
         }
     }
 

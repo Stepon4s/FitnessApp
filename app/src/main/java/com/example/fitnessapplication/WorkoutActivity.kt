@@ -12,16 +12,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapplication.databinding.ActivityWorkoutBinding
 
 class WorkoutActivity : AppCompatActivity() {
-    lateinit var binding: ActivityWorkoutBinding
-    lateinit var rvEx: RecyclerView
+    private lateinit var binding: ActivityWorkoutBinding
+    private lateinit var rvEx: RecyclerView
+    private var exerciseList = ArrayList<Exercise>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // temporary initiation
+        var sets = ArrayList<Set>()
+        sets.add(Set(1,10,22.5))
         var exerciseList = mutableListOf(
-            Exercise("Bench press"),
-            Exercise("Squat")
+            Exercise("Bench press", sets),
+            Exercise("Squat", sets)
         )
 
         val itemAdapter = ExerciseAdapter(exerciseList)
@@ -32,11 +36,14 @@ class WorkoutActivity : AppCompatActivity() {
             LinearLayoutManager.VERTICAL,
             false
         )
+
+
+
         rvEx.adapter = itemAdapter
 
         binding.btnAddEx.setOnClickListener {
             val title = "Exercise"
-            val exercise = Exercise(title)
+            val exercise = Exercise(title, sets)
             exerciseList.add(exercise)
             itemAdapter.notifyItemInserted(exerciseList.size-1)
         }

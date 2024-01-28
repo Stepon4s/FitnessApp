@@ -1,5 +1,6 @@
 package com.example.fitnessapplication
 
 data class Exercise(
-    val title: String
+    val title: String,
+    var sets: MutableList<Set>
 )
