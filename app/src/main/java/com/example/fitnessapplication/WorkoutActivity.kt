@@ -35,17 +35,6 @@ class WorkoutActivity : AppCompatActivity() {
             LinearLayoutManager.VERTICAL,
             false
         )
-
-
-
         rvEx.adapter = itemAdapter
-
-//        binding.btnAddEx.setOnClickListener {
-//            val title = "Exercise"
-//            val exercise = Exercise(title, sets)
-//            exerciseList.add(exercise)
-//            itemAdapter.notifyItemInserted(exerciseList.size-1)
-//        }
-
     }
 }

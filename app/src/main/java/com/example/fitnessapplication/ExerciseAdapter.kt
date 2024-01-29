@@ -39,7 +39,7 @@ class ExerciseAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
             binding.exTitle.text = exercise.title
-            var adapter = SetAdapter(exercise.sets)
+            val adapter = SetAdapter(exercise.sets)
 
             binding.rvSets.layoutManager = LinearLayoutManager(
                 binding.root.context,
