@@ -25,7 +25,6 @@ class WorkoutActivity : AppCompatActivity() {
         sets.add(Set(1,10,22.5))
         var exerciseList = mutableListOf(
             Exercise("Bench press", sets),
-            Exercise("Squat", sets)
         )
 
         val itemAdapter = ExerciseAdapter(exerciseList)
@@ -41,12 +40,12 @@ class WorkoutActivity : AppCompatActivity() {
 
         rvEx.adapter = itemAdapter
 
-        binding.btnAddEx.setOnClickListener {
-            val title = "Exercise"
-            val exercise = Exercise(title, sets)
-            exerciseList.add(exercise)
-            itemAdapter.notifyItemInserted(exerciseList.size-1)
-        }
+//        binding.btnAddEx.setOnClickListener {
+//            val title = "Exercise"
+//            val exercise = Exercise(title, sets)
+//            exerciseList.add(exercise)
+//            itemAdapter.notifyItemInserted(exerciseList.size-1)
+//        }
 
     }
 }

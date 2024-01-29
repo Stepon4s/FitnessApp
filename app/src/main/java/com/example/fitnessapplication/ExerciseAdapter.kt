@@ -5,21 +5,36 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitnessapplication.databinding.ExerciseTemplateBinding
+import com.example.fitnessapplication.databinding.WorkoutFooterBinding
 import com.example.fitnessapplication.databinding.WorkoutHeaderBinding
 
 class ExerciseAdapter(
-    private var exercises: List<Exercise>
+    private var exercises: MutableList<Exercise>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val HEADER_NUMBER = 1
-        private const val FOOTER_NUMBER = 1
         private const val TYPE_ITEM_HEADER = 0
         private const val TYPE_ITEM_FOOTER = 1
-        private const val TYPE_ITEM = 1
+        private const val TYPE_ITEM_EXERCISE = 2
     }
+
     inner class HeaderViewHolder(private val binding: WorkoutHeaderBinding) :
         RecyclerView.ViewHolder(binding.root)
+
+    inner class FooterViewHolder(private val binding: WorkoutFooterBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind() {
+            // Set up button click listener
+            binding.btnAddEx.setOnClickListener {
+                val empty: MutableList<Set> = mutableListOf()
+                empty.add(Set(1, 0, 0.0))
+                val newExercise = Exercise("New Exercise", empty)
+                exercises.add(newExercise)
+                notifyItemInserted(exercises.size) // Notify adapter that an item is inserted
+            }
+        }
+    }
+
     inner class ExerciseViewHolder(private val binding: ExerciseTemplateBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
@@ -35,7 +50,7 @@ class ExerciseAdapter(
 
             binding.btnAddSet.setOnClickListener {
                 exercise.sets.add(Set(exercise.sets.size + 1, 0, 0.0))
-                adapter.notifyItemInserted(exercise.sets.size-1)
+                adapter.notifyItemInserted(exercise.sets.size - 1)
             }
         }
     }
@@ -47,20 +62,21 @@ class ExerciseAdapter(
                 val binding = WorkoutHeaderBinding.inflate(layoutInflater, parent, false)
                 return HeaderViewHolder(binding)
             }
-//
-//            TYPE_ITEM_FOOTER -> {
-//                val layoutInflater = LayoutInflater.from(parent.context)
-//                val binding = WorkoutFooterBinding.inflate(layoutInflater, parent, false)
-//                return FooterViewHolder(binding)
-//            }
 
-            TYPE_ITEM -> {
+            TYPE_ITEM_FOOTER -> {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = WorkoutFooterBinding.inflate(layoutInflater, parent, false)
+                return FooterViewHolder(binding)
+            }
+
+            TYPE_ITEM_EXERCISE -> {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ExerciseTemplateBinding.inflate(layoutInflater, parent, false)
                 return ExerciseViewHolder(binding)
             }
 
-            else -> { throw IllegalArgumentException("Invalid argument value (NO ITEM TYPE)")
+            else -> {
+                throw IllegalArgumentException("Invalid argument value (NO ITEM TYPE)")
             }
         }
     }
@@ -68,27 +84,25 @@ class ExerciseAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ExerciseViewHolder -> {
-                val exercise = exercises[position]
+                val exercise = exercises[position - 1]
                 holder.bind(exercise)
+            }
+            is FooterViewHolder -> {
+                holder.bind()
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return exercises.size
+        return exercises.size + 2
     }
 
-//    override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
-//        val exercise = exercises[position]
-//        holder.bind(exercise)
-//    }
-
     override fun getItemViewType(position: Int): Int {
-        if (0 != HEADER_NUMBER && position < HEADER_NUMBER) {
-            return TYPE_ITEM_HEADER }
-//         else if (0 != FOOTER_NUMBER && position >= (HEADER_NUMBER + exercises.size)) {
-//            return TYPE_ITEM_FOOTER
-//        }
-        return TYPE_ITEM
+        if (position == 0) {
+            return TYPE_ITEM_HEADER
+        } else if (position == exercises.size + 1) {
+            return TYPE_ITEM_FOOTER
+        }
+        return TYPE_ITEM_EXERCISE
     }
 }
