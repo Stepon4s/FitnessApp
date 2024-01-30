@@ -1,16 +1,24 @@
 package com.example.fitnessapplication
 
+import android.app.Activity
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fitnessapplication.databinding.ActivityExerciseListBinding
 import com.example.fitnessapplication.databinding.ExerciseTemplateBinding
 import com.example.fitnessapplication.databinding.WorkoutFooterBinding
 import com.example.fitnessapplication.databinding.WorkoutHeaderBinding
 
 class ExerciseAdapter(
-    private var exercises: MutableList<Exercise>
+    private var exercises: MutableList<Exercise>,
+    private var intent: ActivityResultLauncher<Intent>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
 
     companion object {
         private const val TYPE_ITEM_HEADER = 0
@@ -18,19 +26,15 @@ class ExerciseAdapter(
         private const val TYPE_ITEM_EXERCISE = 2
     }
 
+
     inner class HeaderViewHolder(private val binding: WorkoutHeaderBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     inner class FooterViewHolder(private val binding: WorkoutFooterBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind() {
-            // Set up button click listener
             binding.btnAddEx.setOnClickListener {
-                val empty: MutableList<Set> = mutableListOf()
-                empty.add(Set(1, 0, 0.0))
-                val newExercise = Exercise("New Exercise", empty)
-                exercises.add(newExercise)
-                notifyItemInserted(exercises.size) // Notify adapter that an item is inserted
+                intent.launch(Intent(binding.root.context, ExerciseListActivity::class.java))
             }
         }
     }
@@ -88,7 +92,7 @@ class ExerciseAdapter(
                 holder.bind(exercise)
             }
             is FooterViewHolder -> {
-                holder.bind()
+               holder.bind()
             }
         }
     }
