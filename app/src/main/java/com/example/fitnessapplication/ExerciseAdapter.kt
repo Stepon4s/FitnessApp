@@ -26,7 +26,7 @@ class ExerciseAdapter(
         private const val TYPE_ITEM_EXERCISE = 2
     }
 
-
+    
     inner class HeaderViewHolder(private val binding: WorkoutHeaderBinding) :
         RecyclerView.ViewHolder(binding.root)
 

@@ -2,26 +2,38 @@ package com.example.fitnessapplication
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fitnessapplication.ExerciseNameDatabase.ExerciseName
 import com.example.fitnessapplication.databinding.ExerciseForListTemplateBinding
 
+
+
 class ExerciseListAdapter(
-    private var exercises: List<String>,
-    private val onItemClickListener : OnItemClickListener
+    private var exercisesLiveData: LiveData<List<ExerciseName>>,
+    private val onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<ExerciseListAdapter.SetViewHolder>() {
 
     interface OnItemClickListener {
         fun onItemClick(exercise: String)
     }
 
+    private var exercises: List<ExerciseName> = emptyList()
+
+    init {
+        exercisesLiveData.observeForever { updatedExercises ->
+            exercises = updatedExercises
+            notifyDataSetChanged()
+        }
+    }
+
     inner class SetViewHolder(private val binding: ExerciseForListTemplateBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(exercise: String) {
-            binding.tvEx.text = exercise
+        fun bind(exercise: ExerciseName) {
+            binding.tvEx.text = exercise.title
 
-            binding.root.setOnClickListener{
-                onItemClickListener.onItemClick(exercise)
+            binding.root.setOnClickListener {
+                onItemClickListener.onItemClick(exercise.title)
             }
         }
     }
@@ -40,7 +52,4 @@ class ExerciseListAdapter(
         val exercise = exercises[position]
         holder.bind(exercise)
     }
-
 }
-
-

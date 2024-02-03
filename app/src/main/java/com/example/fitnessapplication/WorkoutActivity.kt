@@ -1,6 +1,7 @@
 package com.example.fitnessapplication
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,8 +22,6 @@ class WorkoutActivity : AppCompatActivity() {
     private lateinit var rvEx: RecyclerView
     private lateinit var itemAdapter: ExerciseAdapter
     private lateinit var intent: ActivityResultLauncher<Intent>
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutBinding.inflate(layoutInflater)
@@ -57,4 +57,6 @@ class WorkoutActivity : AppCompatActivity() {
         )
         rvEx.adapter = itemAdapter
     }
+
+
 }
