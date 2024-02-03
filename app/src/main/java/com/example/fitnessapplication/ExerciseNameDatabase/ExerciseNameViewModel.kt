@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -15,6 +16,8 @@ class ExerciseNameViewModel(
 
     private val _exerciseNames = dao.getExerciseNames()
     private val _state = MutableStateFlow(ExerciseNameState())
+    private val _clickedExerciseName = MutableStateFlow<String?>(null)
+    val clickedExerciseName = _clickedExerciseName.asStateFlow()
     val state = combine(_state,_exerciseNames) { state, exerciseNames ->
         state.copy(
             exerciseNames = exerciseNames
@@ -59,6 +62,10 @@ class ExerciseNameViewModel(
                 _state.update { it.copy(
                     title = event.title
                 ) }
+            }
+
+            is ExerciseNameEvent.ClickedExerciseName -> {
+                _clickedExerciseName.value = event.exerciseName.title
             }
         }
     }

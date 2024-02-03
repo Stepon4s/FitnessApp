@@ -26,7 +26,6 @@ class ExerciseAdapter(
         private const val TYPE_ITEM_EXERCISE = 2
     }
 
-    
     inner class HeaderViewHolder(private val binding: WorkoutHeaderBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -34,7 +33,7 @@ class ExerciseAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind() {
             binding.btnAddEx.setOnClickListener {
-                intent.launch(Intent(binding.root.context, ExerciseListActivity::class.java))
+                intent.launch(Intent(binding.root.context, ComposeExerciseList::class.java))
             }
         }
     }

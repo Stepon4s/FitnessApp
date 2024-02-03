@@ -7,4 +7,5 @@ sealed interface ExerciseNameEvent {
     object HideDialog: ExerciseNameEvent
     data class SortExercisesNames(val sortType: String) : ExerciseNameEvent
     data class DeleteExerciseName(val exerciseName: ExerciseName) : ExerciseNameEvent
+    data class ClickedExerciseName(val exerciseName: ExerciseName) : ExerciseNameEvent
 }

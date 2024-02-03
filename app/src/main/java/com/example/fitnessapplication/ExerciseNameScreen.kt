@@ -1,5 +1,6 @@
 package com.example.fitnessapplication
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,20 +28,21 @@ import com.example.fitnessapplication.ExerciseNameDatabase.ExerciseNameState
 fun ExerciseNameScreen(
     state: ExerciseNameState,
     onEvent: (ExerciseNameEvent) -> Unit
-){
-    Scaffold (
+) {
+    Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 onEvent(ExerciseNameEvent.ShowDialog)
             }) {
-                Icon(imageVector = Icons.Default.Add,
+                Icon(
+                    imageVector = Icons.Default.Add,
                     contentDescription = "Add exerciseName"
                 )
             }
         },
         modifier = Modifier.padding(16.dp)
     ) { padding ->
-        if(state.isAddingExerciseName){
+        if (state.isAddingExerciseName) {
             AddExerciseNameDialog(state = state, onEvent = onEvent)
         }
         LazyColumn(
@@ -48,12 +50,13 @@ fun ExerciseNameScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(state.exerciseNames){ exerciseName ->
+            items(state.exerciseNames) { exerciseName ->
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
                         modifier = Modifier.weight(1f)
+                            .clickable { onEvent(ExerciseNameEvent.ClickedExerciseName(exerciseName)) }
                     ) {
                         Text(
                             text = "${exerciseName.title}",
@@ -63,7 +66,8 @@ fun ExerciseNameScreen(
                     IconButton(onClick = {
                         onEvent(ExerciseNameEvent.DeleteExerciseName(exerciseName))
                     }) {
-                        Icon(imageVector = Icons.Default.Delete,
+                        Icon(
+                            imageVector = Icons.Default.Delete,
                             contentDescription = "Delete exerciseName"
                         )
                     }

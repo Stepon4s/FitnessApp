@@ -36,14 +36,13 @@ class WorkoutActivity : AppCompatActivity() {
         intent =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-
                     val exercise = result.data?.getStringExtra("selectedExercise")
-
-                    val set = ArrayList<Set>()
-                    set.add(Set(1, 10, 22.5))
-                    exerciseList.add(Exercise(exercise as String, set))
-
-                    itemAdapter.notifyDataSetChanged()
+                    if (exercise != null) {
+                        val set = ArrayList<Set>()
+                        set.add(Set(1, 0, 0.0))
+                        exerciseList.add(Exercise(exercise, set))
+                        itemAdapter.notifyDataSetChanged()
+                    }
                 }
             }
 
