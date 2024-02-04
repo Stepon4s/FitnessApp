@@ -1,21 +1,24 @@
 package com.example.fitnessapplication
 
-import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fitnessapplication.databinding.ActivityExerciseListBinding
+import com.example.fitnessapplication.workoutDatabase.Exercise
+import com.example.fitnessapplication.workoutDatabase.Set
 import com.example.fitnessapplication.databinding.ExerciseTemplateBinding
 import com.example.fitnessapplication.databinding.WorkoutFooterBinding
 import com.example.fitnessapplication.databinding.WorkoutHeaderBinding
+import com.example.fitnessapplication.workoutDatabase.WorkoutDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ExerciseAdapter(
-    private var exercises: MutableList<Exercise>,
+    var exercises: MutableList<Exercise>,
     private var intent: ActivityResultLauncher<Intent>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -26,6 +29,7 @@ class ExerciseAdapter(
         private const val TYPE_ITEM_EXERCISE = 2
     }
 
+
     inner class HeaderViewHolder(private val binding: WorkoutHeaderBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -33,7 +37,7 @@ class ExerciseAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind() {
             binding.btnAddEx.setOnClickListener {
-                intent.launch(Intent(binding.root.context, ComposeExerciseList::class.java))
+                intent.launch(Intent(binding.root.context, ComposeExerciseListActivity::class.java))
             }
         }
     }
@@ -41,8 +45,9 @@ class ExerciseAdapter(
     inner class ExerciseViewHolder(private val binding: ExerciseTemplateBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
+
             binding.exTitle.text = exercise.title
-            val adapter = SetAdapter(exercise.sets)
+            val adapter = SetAdapter(mutableListOf())
 
             binding.rvSets.layoutManager = LinearLayoutManager(
                 binding.root.context,
@@ -51,9 +56,28 @@ class ExerciseAdapter(
             )
             binding.rvSets.adapter = adapter
 
+            val db by lazy {
+                WorkoutDatabase.getDatabase(binding.root.context)
+            }
+
+            fun refreshSets() {
+                GlobalScope.launch(Dispatchers.IO) {
+                    val sets = db.workoutDao().getSetsForExercise(exercise.id)
+                    withContext(Dispatchers.Main) {
+                        adapter.sets = sets.toMutableList()
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            }
+            refreshSets()
+
             binding.btnAddSet.setOnClickListener {
-                exercise.sets.add(Set(exercise.sets.size + 1, 0, 0.0))
-                adapter.notifyItemInserted(exercise.sets.size - 1)
+                GlobalScope.launch(Dispatchers.IO) {
+                    val setsCount = db.workoutDao().getSetsForExercise(exercise.id).size
+                    val set = Set(setsCount + 1, weight = 0.0, reps = 0, exerciseId = exercise.id)
+                    db.workoutDao().insertSet(set)
+                    refreshSets()
+                }
             }
         }
     }
@@ -90,8 +114,9 @@ class ExerciseAdapter(
                 val exercise = exercises[position - 1]
                 holder.bind(exercise)
             }
+
             is FooterViewHolder -> {
-               holder.bind()
+                holder.bind()
             }
         }
     }

@@ -16,7 +16,7 @@ import androidx.room.Room
 import com.example.fitnessapplication.ExerciseNameDatabase.ExerciseNameDatabase
 import com.example.fitnessapplication.ExerciseNameDatabase.ExerciseNameViewModel
 
-class ComposeExerciseList : AppCompatActivity() {
+class ComposeExerciseListActivity : AppCompatActivity() {
 
     private val db by lazy {
         Room.databaseBuilder(

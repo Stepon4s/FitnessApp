@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +30,8 @@ fun ExerciseNameScreen(
     state: ExerciseNameState,
     onEvent: (ExerciseNameEvent) -> Unit
 ) {
+    val exerciseNames = state.exerciseNames.collectAsState(initial = emptyList())
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -50,7 +53,7 @@ fun ExerciseNameScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(state.exerciseNames) { exerciseName ->
+            items(exerciseNames.value) { exerciseName ->
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {

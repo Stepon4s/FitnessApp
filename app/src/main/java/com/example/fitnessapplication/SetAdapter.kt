@@ -3,11 +3,11 @@ package com.example.fitnessapplication
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fitnessapplication.databinding.ExerciseTemplateBinding
+import com.example.fitnessapplication.workoutDatabase.Set
 import com.example.fitnessapplication.databinding.SetTemplateBinding
 
 class SetAdapter(
-    private var sets : List<Set>
+    var sets : MutableList<Set>
 ) : RecyclerView.Adapter<SetAdapter.SetViewHolder>() {
 
     inner class SetViewHolder(private val binding: SetTemplateBinding) :

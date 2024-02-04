@@ -3,10 +3,7 @@ package com.example.fitnessapplication.ExerciseNameDatabase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -14,15 +11,18 @@ class ExerciseNameViewModel(
     private val dao: ExerciseNameDao
 ): ViewModel(){
 
-    private val _exerciseNames = dao.getExerciseNames()
     private val _state = MutableStateFlow(ExerciseNameState())
     private val _clickedExerciseName = MutableStateFlow<String?>(null)
     val clickedExerciseName = _clickedExerciseName.asStateFlow()
-    val state = combine(_state,_exerciseNames) { state, exerciseNames ->
-        state.copy(
-            exerciseNames = exerciseNames
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExerciseNameState())
+
+    val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            val exerciseNames = dao.getExerciseNames()
+            _state.value = _state.value.copy(exerciseNames = exerciseNames)
+        }
+    }
 
     fun onEvent(event: ExerciseNameEvent) {
         when(event){
