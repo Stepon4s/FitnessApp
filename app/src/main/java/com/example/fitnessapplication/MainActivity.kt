@@ -44,8 +44,7 @@ class MainActivity : AppCompatActivity() {
                     velocityY: Float
                 ): Boolean {
                     if (e1 != null && e2 != null) {
-                        if (e1.x - e2.x > 120 && abs(velocityX) > 200) {
-                            // User swiped left
+                        if (e1.x - e2.x > 60 && kotlin.math.abs(velocityX) > 100) {
                             val intent2 =
                                 Intent(this@MainActivity, WorkoutHistoryActivity::class.java)
                             startActivity(intent2)
@@ -54,16 +53,19 @@ class MainActivity : AppCompatActivity() {
                     }
                     return false
                 }
+
             })
     }
-
-
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return if (event?.let { gestureDetector.onTouchEvent(it) } == true) {
-            true
-        } else {
-            super.onTouchEvent(event)
+        if (event != null) {
+            this.gestureDetector.onTouchEvent(event)
         }
+        return super.onTouchEvent(event)
     }
 }
+
+
+
+
+
 
