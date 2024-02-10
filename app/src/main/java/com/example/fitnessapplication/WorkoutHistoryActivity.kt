@@ -95,7 +95,8 @@ fun ListItem(workout: Workout, workoutDao: WorkoutDao) {
                     Text(text = "Workout: ${workout.id}")
                     val format = SimpleDateFormat("yyyy-MM-dd")
                     Text(text = "Date: ${format.format(Date(workout.startTime))}")
-                    Text(text = "End Time: ${workout.endTime}")
+                    Text(text = "End Time: ${workout.saved}")
+                    Text(text = "End Time: ${workout.id}")
                 }
                 OutlinedButton(onClick = { expanded.value = !expanded.value }) {
                     Text(if (expanded.value) "Show less" else "Show more")

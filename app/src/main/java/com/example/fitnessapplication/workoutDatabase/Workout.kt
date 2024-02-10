@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class Workout(
     val startTime: Long,
-    val endTime: Long,
+    var endTime: Long,
+    var saved: Boolean,
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0

@@ -1,6 +1,7 @@
 package com.example.fitnessapplication
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
@@ -19,7 +20,8 @@ import kotlinx.coroutines.withContext
 
 class ExerciseAdapter(
     var exercises: MutableList<Exercise>,
-    private var intent: ActivityResultLauncher<Intent>
+    private var intent: ActivityResultLauncher<Intent>,
+    private val workoutId: Int
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -38,6 +40,16 @@ class ExerciseAdapter(
         fun bind() {
             binding.btnAddEx.setOnClickListener {
                 intent.launch(Intent(binding.root.context, ComposeExerciseListActivity::class.java))
+            }
+            binding.btnSaveWorkout.setOnClickListener {
+                GlobalScope.launch(Dispatchers.IO) {
+                    val db = WorkoutDatabase.getDatabase(binding.root.context)
+                    val workout = db.workoutDao().getWorkoutById(workoutId)
+                    Log.d("WorkoutActivity", "workoutId: $workoutId")
+                    workout.endTime = System.currentTimeMillis()
+                    workout.saved = true
+                    (binding.root.context as WorkoutActivity).finish()
+                }
             }
         }
     }

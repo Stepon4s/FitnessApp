@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,25 +28,33 @@ class WorkoutActivity : AppCompatActivity() {
     private val db by lazy {
         WorkoutDatabase.getDatabase(applicationContext)
     }
-    private var workoutId = 0
-
+    private var workoutId: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWorkoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        var sets = ArrayList<Set>()
-//        sets.add(Set(1, 10, 22.5))
-//        var exerciseList = mutableListOf(
-//            Exercise("Bench press", sets),
-//        )
-
         GlobalScope.launch(Dispatchers.IO) {
-            val workout = Workout(startTime = System.currentTimeMillis(), endTime = 0)
-            workoutId = db.workoutDao().insertWorkout(workout).toInt()
+            if (db.workoutDao().getRowCount() != 0) {
+                val saved = db.workoutDao().getLatestWorkout().saved
+                workoutId = if (saved) {
+                    val workout =
+                        Workout(startTime = System.currentTimeMillis(), endTime = 0, false)
+                    db.workoutDao().insertWorkout(workout).toInt()
+                } else {
+                    db.workoutDao().getLatestWorkout().id
+                }
+            }
+            else {
+                val workout = Workout(startTime = System.currentTimeMillis(), endTime = 0, false)
+                workoutId = db.workoutDao().insertWorkout(workout).toInt()
+            }
+            refreshExercises()
         }
 
+
+        Log.d("WorkoutActivity", "workoutIdActivit: $workoutId")
         intent =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
@@ -63,7 +72,7 @@ class WorkoutActivity : AppCompatActivity() {
                 }
             }
 
-        itemAdapter = ExerciseAdapter(mutableListOf(), intent)
+        itemAdapter = ExerciseAdapter(mutableListOf(), intent, workoutId)
 
         rvEx = binding.rvExercises
         rvEx.layoutManager = LinearLayoutManager(

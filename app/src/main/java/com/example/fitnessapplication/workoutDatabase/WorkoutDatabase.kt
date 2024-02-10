@@ -6,8 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Workout::class, Exercise::class, Set::class],
-    version = 1
+    entities = [Workout::class, Exercise::class, Set::class], version = 2
 )
 abstract class WorkoutDatabase : RoomDatabase() {
     abstract fun workoutDao(): WorkoutDao
@@ -18,15 +17,14 @@ abstract class WorkoutDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): WorkoutDatabase {
             val tempInstance = INSTANCE
-            if(tempInstance != null){
+            if (tempInstance != null) {
                 return tempInstance
             }
-            synchronized(this){
+            synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    WorkoutDatabase::class.java,
-                    "workout-database"
-                ).build()
+                    context.applicationContext, WorkoutDatabase::class.java, "workout-database"
+                ).fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 return instance
             }

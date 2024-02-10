@@ -7,8 +7,17 @@ import androidx.room.Query
 
 @Dao
 interface WorkoutDao {
+
+    @Query("SELECT COUNT(*) FROM workout")
+    suspend fun getRowCount(): Int
     @Query("SELECT * FROM workout")
-    fun getAllWorkouts(): List<Workout>
+    suspend fun getAllWorkouts(): List<Workout>
+
+    @Query("SELECT * FROM workout WHERE id = :id")
+    suspend fun getWorkoutById(id: Int): Workout
+
+    @Query("SELECT * FROM workout ORDER BY id DESC LIMIT 1")
+    suspend fun getLatestWorkout(): Workout
 
     @Query("SELECT * FROM exercise WHERE workoutId = :workoutId")
     fun getExercisesForWorkout(workoutId: Int): List<Exercise>
