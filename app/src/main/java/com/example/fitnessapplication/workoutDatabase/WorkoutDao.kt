@@ -4,10 +4,14 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface WorkoutDao {
-
+    @Update
+    suspend fun updateSet(set: Set)
+    @Update
+    suspend fun updateWorkout(workout: Workout)
     @Query("SELECT COUNT(*) FROM workout")
     suspend fun getRowCount(): Int
     @Query("SELECT * FROM workout")

@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Workout(
+    var title: String,
     val startTime: Long,
     var endTime: Long,
     var saved: Boolean,

@@ -19,9 +19,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ExerciseAdapter(
-    var exercises: MutableList<Exercise>,
-    private var intent: ActivityResultLauncher<Intent>,
-    private val workoutId: Int
+var exercises: MutableList<Exercise>,
+private var intent: ActivityResultLauncher<Intent>,
+private val workoutId: Int
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -33,7 +33,16 @@ class ExerciseAdapter(
 
 
     inner class HeaderViewHolder(private val binding: WorkoutHeaderBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
+            fun bind(){
+                GlobalScope.launch(Dispatchers.IO) {
+                    val db = WorkoutDatabase.getDatabase(binding.root.context)
+                    val workout = db.workoutDao().getWorkoutById(workoutId)
+                        workout.title = binding.nameWorkout.text.toString()
+                        db.workoutDao().updateWorkout(workout)
+                }
+            }
+        }
 
     inner class FooterViewHolder(private val binding: WorkoutFooterBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -45,9 +54,9 @@ class ExerciseAdapter(
                 GlobalScope.launch(Dispatchers.IO) {
                     val db = WorkoutDatabase.getDatabase(binding.root.context)
                     val workout = db.workoutDao().getWorkoutById(workoutId)
-                    Log.d("WorkoutActivity", "workoutId: $workoutId")
                     workout.endTime = System.currentTimeMillis()
                     workout.saved = true
+                    db.workoutDao().updateWorkout(workout)
                     (binding.root.context as WorkoutActivity).finish()
                 }
             }
@@ -128,6 +137,10 @@ class ExerciseAdapter(
             }
 
             is FooterViewHolder -> {
+                holder.bind()
+            }
+
+            is HeaderViewHolder -> {
                 holder.bind()
             }
         }

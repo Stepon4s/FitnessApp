@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -40,9 +41,11 @@ class ComposeExerciseListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_compose_exercise_list)
+
+        val myColor = Color(0xFF0D3D56)
         findViewById<ComposeView>(R.id.cvExerciseList).setContent {
             MaterialTheme {
-                Surface {
+                Surface(color = myColor) {
                     val state by viewModel.state.collectAsState()
                     val clickedExerciseName by viewModel.clickedExerciseName.collectAsState()
                     ExerciseNameScreen(state = state, onEvent = viewModel::onEvent)

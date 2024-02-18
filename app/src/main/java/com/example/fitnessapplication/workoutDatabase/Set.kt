@@ -13,9 +13,10 @@ import androidx.room.PrimaryKey
     )])
 data class Set (
     val number: Int,
-    val reps: Int,
-    val weight: Double,
+    var reps: Int,
+    var weight: Double,
     val exerciseId: Int,
+    val timestamp: Long = System.currentTimeMillis(),
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0

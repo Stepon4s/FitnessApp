@@ -23,6 +23,12 @@ class ExerciseNameViewModel(
             _state.value = _state.value.copy(exerciseNames = exerciseNames)
         }
     }
+    fun fetchExerciseNames() {
+        viewModelScope.launch {
+            val exerciseNames = dao.getExerciseNames()
+            _state.value = _state.value.copy(exerciseNames = exerciseNames)
+        }
+    }
 
     fun onEvent(event: ExerciseNameEvent) {
         when(event){

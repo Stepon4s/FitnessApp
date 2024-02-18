@@ -35,26 +35,13 @@ class WorkoutActivity : AppCompatActivity() {
         binding = ActivityWorkoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            if (db.workoutDao().getRowCount() != 0) {
-                val saved = db.workoutDao().getLatestWorkout().saved
-                workoutId = if (saved) {
-                    val workout =
-                        Workout(startTime = System.currentTimeMillis(), endTime = 0, false)
-                    db.workoutDao().insertWorkout(workout).toInt()
-                } else {
-                    db.workoutDao().getLatestWorkout().id
-                }
-            }
-            else {
-                val workout = Workout(startTime = System.currentTimeMillis(), endTime = 0, false)
-                workoutId = db.workoutDao().insertWorkout(workout).toInt()
-            }
-            refreshExercises()
-        }
+        rvEx = binding.rvExercises
+        rvEx.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
 
-
-        Log.d("WorkoutActivity", "workoutIdActivit: $workoutId")
         intent =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
@@ -72,17 +59,27 @@ class WorkoutActivity : AppCompatActivity() {
                 }
             }
 
-        itemAdapter = ExerciseAdapter(mutableListOf(), intent, workoutId)
+        GlobalScope.launch(Dispatchers.IO) {
+            if (db.workoutDao().getRowCount() != 0) {
+                val saved = db.workoutDao().getLatestWorkout().saved
+                workoutId = if (saved) {
+                    val workout = Workout("Workout",startTime = System.currentTimeMillis(), endTime = 0, false)
+                    db.workoutDao().insertWorkout(workout).toInt()
+                } else {
+                    db.workoutDao().getLatestWorkout().id
+                }
+            }
+            else {
+                val workout = Workout("Workout",startTime = System.currentTimeMillis(), endTime = 0, false)
+                workoutId = db.workoutDao().insertWorkout(workout).toInt()
+            }
 
-        rvEx = binding.rvExercises
-        rvEx.layoutManager = LinearLayoutManager(
-            this,
-            LinearLayoutManager.VERTICAL,
-            false
-        )
-        rvEx.adapter = itemAdapter
-
-        refreshExercises()
+            withContext(Dispatchers.Main) {
+                itemAdapter = ExerciseAdapter(mutableListOf(), intent, workoutId)
+                rvEx.adapter = itemAdapter
+                refreshExercises()
+            }
+        }
     }
 
     private fun refreshExercises() {

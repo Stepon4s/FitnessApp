@@ -1,5 +1,6 @@
 package com.example.fitnessapplication
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,10 +21,12 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnessapplication.ExerciseNameDatabase.ExerciseNameEvent
 import com.example.fitnessapplication.ExerciseNameDatabase.ExerciseNameState
+import com.example.fitnessapplication.ui.theme.myFontFamily
 
 @Composable
 fun ExerciseNameScreen(
@@ -50,7 +53,7 @@ fun ExerciseNameScreen(
         }
         LazyColumn(
             contentPadding = padding,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().background(color = Color(0xFF0D3D56)),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(exerciseNames.value) { exerciseName ->
@@ -63,7 +66,9 @@ fun ExerciseNameScreen(
                     ) {
                         Text(
                             text = "${exerciseName.title}",
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                            color = Color.White,
+                            fontFamily = myFontFamily
                         )
                     }
                     IconButton(onClick = {
